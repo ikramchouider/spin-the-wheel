@@ -25,6 +25,7 @@ const AttackOnTitanWheel = () => {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState('');
+  const [prize, setPrize] = useState('');
   const [isResetting, setIsResetting] = useState(false);
   const wheelRef = useRef(null);
 
@@ -75,7 +76,14 @@ const AttackOnTitanWheel = () => {
       const adjustedRotation = (360 - normalizedRotation ) % 360;
       const segmentIndex = Math.floor(adjustedRotation / segmentAngle);
       
+      
       setResult(segments[segmentIndex].name);
+
+      const prizes = ["STICKER", "NOTEBOOK", "PENCIL", "ART CARD"];
+      const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+      setPrize(randomPrize);
+
+
       setSpinning(false);
       console.log('normalizedRotation = ', normalizedRotation)
       console.log('adjustedRotation = ', adjustedRotation)
@@ -141,6 +149,8 @@ const AttackOnTitanWheel = () => {
               >
                 {segments.map((segment, index) => {
 
+                  
+
                   const angle = (360 / segments.length) * index;
                   const segmentAngle = 360 / segments.length;
                   
@@ -196,8 +206,9 @@ const AttackOnTitanWheel = () => {
 
 
             {result && (
-              <div className="p-8 bg-black rounded-xl shadow-2xl border-4 border-red-600 animate-pulse">
-                <p className="text-white text-center" style={{ 
+              <div className="p-8 bg-black rounded-xl shadow-2xl border-4 border-red-600 animate-pulse  flex flex-col items-center justify-center md:w-3/5">
+                <img className='rounded-xl mb-8' src={result +"1.jpg"}></img>
+                <p className="text-white text-center mb-4" style={{ 
                   fontFamily: "'New Rocker', cursive", 
                   fontWeight: 400,
                   fontSize: '24px',
@@ -205,6 +216,20 @@ const AttackOnTitanWheel = () => {
                 }}>
                   YOU GOT: <span className="text-red-400">{result}!</span>
                 </p>
+                <p className="text-white text-center mb-4 mt-4" style={{ 
+                  fontFamily: "'New Rocker', cursive", 
+                  fontWeight: 400,
+                  fontSize: '24px',
+                  lineHeight: '100%',
+                }}>
+                  {result} IS GIVING YOU 
+                </p>
+                 <span className="text-red-400"  style={{ 
+                  fontFamily: "'New Rocker', cursive", 
+                  fontWeight: 400,
+                  fontSize: '24px',
+                  lineHeight: '100%',
+                }}>  {prize.charAt(0) === "A" || prize.charAt(0) === "O" || prize.charAt(0) === "I"  ? "AN ": "A "} {prize}!</span>
               </div>
             )}
 
@@ -218,7 +243,7 @@ const AttackOnTitanWheel = () => {
               }}>
                 "If you win, you live. If you lose, you die. If you don't fight, you can't win!"
               </p>
-              <p className="text-gray-300 mt-4" style={{ 
+              <p className="text-gray-300 mt-4 " style={{ 
                 fontFamily: "'New Rocker', cursive", 
                 fontWeight: 400,
                 fontSize: '18px',
