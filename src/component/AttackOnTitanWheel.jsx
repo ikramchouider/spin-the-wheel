@@ -61,6 +61,9 @@ const AttackOnTitanWheel = () => {
     
     setSpinning(true);
     setResult('');
+
+    const spinSound = new Audio('/wheelsound.mp3');
+    spinSound.play();
     
     const spinDuration = 4000;
     const minSpins = 5;
