@@ -26,7 +26,7 @@ const AttackOnTitanWheel = () => {
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState('');
   const [prize, setPrize] = useState('');
-  const [isResetting, setIsResetting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const wheelRef = useRef(null);
 
   const segments = [
@@ -62,6 +62,7 @@ const AttackOnTitanWheel = () => {
     setSpinning(true);
     setResult('');
 
+
     const spinSound = new Audio('/wheelsound.mp3');
     spinSound.play();
     
@@ -79,15 +80,15 @@ const AttackOnTitanWheel = () => {
       const adjustedRotation = (360 - normalizedRotation ) % 360;
       const segmentIndex = Math.floor(adjustedRotation / segmentAngle);
       
-      
       setResult(segments[segmentIndex].name);
 
-      const prizes = ["STICKER", "NOTEBOOK", "PENCIL", "ART CARD"];
+      const prizes = ["STICKER", "NOTEBOOK", "PENCIL"];
       const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
       setPrize(randomPrize);
 
-
       setSpinning(false);
+      setShowPopup(true);
+      
       console.log('normalizedRotation = ', normalizedRotation)
       console.log('adjustedRotation = ', adjustedRotation)
       console.log('segmentIndex = ', segmentIndex)
@@ -140,7 +141,6 @@ const AttackOnTitanWheel = () => {
               <div className="w-0 h-0 border-l-[25px] border-l-transparent border-r-[25px] border-r-transparent border-t-[50px] border-t-red-600 drop-shadow-lg"></div>
             </div>
 
-
             <div className="relative w-80 h-80 md:w-96 md:h-96 rounded-full shadow-2xl overflow-hidden border-8 border-gray-900 bg-black">
               <div
                 ref={wheelRef}
@@ -151,9 +151,6 @@ const AttackOnTitanWheel = () => {
                 }}
               >
                 {segments.map((segment, index) => {
-
-                  
-
                   const angle = (360 / segments.length) * index;
                   const segmentAngle = 360 / segments.length;
                   
@@ -167,7 +164,7 @@ const AttackOnTitanWheel = () => {
                       }}
                     >
                       <div
-                        className="w-full h-full flex items-center justify-center  relative"
+                        className="w-full h-full flex items-center justify-center relative"
                         style={{ 
                           backgroundImage: `url(${segment.image})`,
                           backgroundSize: 'cover',
@@ -180,14 +177,11 @@ const AttackOnTitanWheel = () => {
                 })}
               </div>
               
-
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gray-900 rounded-full border-4 border-amber-500 shadow-2xl z-10"></div>
             </div>
           </div>
 
-
           <div className="flex flex-col items-center gap-8">
-
             <button
               onClick={spinWheel}
               disabled={spinning}
@@ -207,36 +201,6 @@ const AttackOnTitanWheel = () => {
               {spinning ? 'SPINNING...' : 'SPIN THE WHEEL'}
             </button>
 
-
-            {result && (
-              <div className="p-8 bg-black rounded-xl shadow-2xl border-4 border-red-600 animate-pulse  flex flex-col items-center justify-center md:w-3/5">
-                <img className='rounded-xl mb-8' src={result +"1.jpg"}></img>
-                <p className="text-white text-center mb-4" style={{ 
-                  fontFamily: "'New Rocker', cursive", 
-                  fontWeight: 400,
-                  fontSize: '24px',
-                  lineHeight: '100%',
-                }}>
-                  YOU GOT: <span className="text-red-400">{result}!</span>
-                </p>
-                <p className="text-white text-center mb-4 mt-4" style={{ 
-                  fontFamily: "'New Rocker', cursive", 
-                  fontWeight: 400,
-                  fontSize: '24px',
-                  lineHeight: '100%',
-                }}>
-                  {result} IS GIVING YOU 
-                </p>
-                 <span className="text-red-400"  style={{ 
-                  fontFamily: "'New Rocker', cursive", 
-                  fontWeight: 400,
-                  fontSize: '24px',
-                  lineHeight: '100%',
-                }}>  {prize.charAt(0) === "A" || prize.charAt(0) === "O" || prize.charAt(0) === "I"  ? "AN ": "A "} {prize}!</span>
-              </div>
-            )}
-
-
             <div className="text-center max-w-md bg-black/80 p-6 rounded-xl border-2 border-gray-700">
               <p className="text-white italic" style={{ 
                 fontFamily: "'New Rocker', cursive", 
@@ -246,7 +210,7 @@ const AttackOnTitanWheel = () => {
               }}>
                 "If you win, you live. If you lose, you die. If you don't fight, you can't win!"
               </p>
-              <p className="text-gray-300 mt-4 " style={{ 
+              <p className="text-gray-300 mt-4" style={{ 
                 fontFamily: "'New Rocker', cursive", 
                 fontWeight: 400,
                 fontSize: '18px',
@@ -256,6 +220,56 @@ const AttackOnTitanWheel = () => {
           </div>
         </div>
       </div>
+
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0, 0, 0, 0.9)' }}>
+          <div className="bg-black rounded-2xl shadow-2xl border-4 border-red-600 p-8 max-w-md w-full animate-pulse">
+            <div className="w-full h-64 mb-8 rounded-xl overflow-hidden">
+              <img 
+                className='w-full h-full object-cover' 
+                src={result + "1.jpg"} 
+                alt={result}
+              />
+            </div>
+            <p className="text-white text-center mb-4" style={{ 
+              fontFamily: "'New Rocker', cursive", 
+              fontWeight: 400,
+              fontSize: '28px',
+              lineHeight: '100%',
+            }}>
+              YOU GOT: <span className="text-red-400">{result}!</span>
+            </p>
+            <p className="text-white text-center mb-4 mt-4" style={{ 
+              fontFamily: "'New Rocker', cursive", 
+              fontWeight: 400,
+              fontSize: '24px',
+              lineHeight: '100%',
+            }}>
+              {result} IS GIVING YOU 
+            </p>
+            <p className="text-red-400 text-center mb-6" style={{ 
+              fontFamily: "'New Rocker', cursive", 
+              fontWeight: 400,
+              fontSize: '28px',
+              lineHeight: '100%',
+            }}>
+              {prize.charAt(0) === "A" || prize.charAt(0) === "O" || prize.charAt(0) === "I" ? "AN " : "A "}{prize}!
+            </p>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="w-full px-8 py-4 bg-red-700 border-2 border-red-800 rounded-xl shadow-xl hover:bg-red-800 transition-all text-white"
+              style={{ 
+                fontFamily: "'New Rocker', cursive",  
+                fontWeight: 400,
+                fontSize: '20px',
+                lineHeight: '100%',
+              }}
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
